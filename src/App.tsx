@@ -1,22 +1,24 @@
-import React, { useState, createContext, useContext } from 'react';
+import React, { useReducer } from 'react';
 import './App.css';
 
-const countContext = createContext(0)
-
-const Count: React.FC = () => {
-  const count = useContext(countContext)
-  return <div>{count}</div>
-}
 
 const App: React.FC = () => {
-  const [count, setCount] = useState(0)
+  const [count, dispatch] = useReducer((state: number, action: string) => {
+    switch (action) {
+      case '+':
+        return state + 1
+      case '-':
+        return state - 1
+      default:
+        return state
+    }
+  }, 0)
   return (
     <div className="App">
       <header className="App-header">
-        <countContext.Provider value={count}>
-          <Count />
-        </countContext.Provider>
-        <button onClick={() => setCount(count + 1)}>+1</button>
+        <div>计数器：{count}</div>
+        <button onClick={() => dispatch('+')}>+1</button>
+        <button onClick={() => dispatch('-')}>-1</button>
       </header>
     </div>
   );
