@@ -1,21 +1,30 @@
-import React, { useState, useRef } from 'react';
-import './App.css';
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const App: React.FC = () => {
-  const [isShow, setIsShow] = useState(false)
-  const ctx = useRef(null)
-  let value = '通过使用 CSS 我们可以大大提升网页开发的工作效率！ 在我们的 CSS 教程中，您会学到如何使用 CSS 同时控制多重网页的样式和布局。本 CSS 教程包含了数百个CSS在线实例,通过本站的在线编辑器，你可以在线编辑CSS,并且可以在线查看修改后的效果。'
+  const [data, setData] = useState({ hits: [] });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios(
+        'https://hn.algolia.com/api/v1/search?query=redux',
+      );
+  
+      setData(result.data);
+    };
+
+    fetchData();
+  }, []);
   return (
     <div className="App">
-      <header className="App-header">
-        <div ref={ctx}
-          className="content"
-          data-after={isShow ? '收起' : '展开'}
-          onClick={() => setIsShow(!isShow)}
-        >
-          {isShow ? value : value.slice(0, 30) + ' '}
-        </div>
-      </header>
+      <ul>
+        {data.hits.map(item => (
+          <li key={item.objectID}>
+            <a href={item.url}>{item.title}</a>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
